@@ -60,26 +60,28 @@
   <audio data-key="76" src="./sounds/tink.wav"></audio>
 
   <script>
-    document.onkeypress = (e) => {
-      let charKey = e.key.toUpperCase().charCodeAt(0)
+    window.addEventListener('keydown', function(e) {
 
-      function getSoundPathBasedOnKey(charKey) {
-        let target = document.querySelectorAll('audio[data-key="' + charKey + '"]')[0].getAttribute("src")
-        var audio = new Audio(target);
-        audio.play();
 
+      const audio = document.querySelector('audio[data-key="' + e.keyCode + '"]')
+      const key = document.querySelector('div[data-key="' + e.keyCode + '"]')
+
+      if (!audio) return;
+      audio.currentTime = 0; // rewind?
+      audio.play();
+
+
+      key.classList.add('playing');
+
+      function removeTransition(e) {
+        if (e.propertyName !== 'transform') return;
+        e.target.classList.remove('playing');
       }
 
-    function toggleClassPlaying(charKey) {
-      document.querySelectorAll('div[data-key="' + charKey + '"]')[0].className += ' playing'
-      setTimeout(() => {
-        return document.querySelectorAll('div[data-key="' + charKey + '"]')[0].className = 'key'
-      }, 100)
-    }
+      const keys = document.querySelectorAll('.key');
+      keys.forEach(key => key.addEventListener('transitionend', removeTransition))
 
-      getSoundPathBasedOnKey(charKey)
-      toggleClassPlaying(charKey)
-    }
+    })
   </script>
 
 
